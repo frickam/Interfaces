@@ -1,11 +1,9 @@
 import javax.swing.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class ShortLister {
@@ -43,100 +41,35 @@ public class ShortLister {
         }
 
 
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        int returnValue = chooser.showOpenDialog(null);
 
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            displayShortWords(selectedFile);
+        } else {
+            System.out.println("No file selected. Terminating.");
+            System.exit(0);
+        }
+    }
+
+    private static void displayShortWords(File file) {
+        ShortWordFilter filter = new ShortWordFilter();
+
+        System.out.println("\nShort words (length < 5) from the selected file:");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (filter.accept(line)) {
+                    System.out.println(line);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + file.getAbsolutePath());
+        }
 
 
     }
-    // ArrayList<interface> name = new ArrayList<>();     name.add(new Name())
 
-    //  JFileChooser chooser = new JFileChooser();
-    //        Scanner inFile;
-    //        String line;
-    //        Path target = new File(System.getProperty("user.dir")).toPath();
-    //        target = target.resolve("src");
-    //            // Set the chooser to the project src directory
-    //        chooser.setCurrentDirectory(target.toFile());
-    //
-    //        try
-    //        {
-    //            if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-    //            {
-    //                    target = chooser.getSelectedFile().toPath();
-    //                inFile = new Scanner(target);
-    //                while (inFile.hasNextLine())
-    //                {
-    //                    line = inFile.nextLine();
-    //                    System.out.println(line);
-    //                }
-    //
-    //                inFile.close();
-    //
-    //            }
-    //            else       // User did not pick a file, closed the chooser
-    //            {
-    //                System.out.println("Sorry, you must select a file! Terminating!");
-    //                System.exit(0);
-    //            }
-    //        }
-    //        catch (FileNotFoundException e)
-    //        {
-    //            System.out.println("File Not Found Error");
-    //
-    //        } catch (IOException e) {
-    //            throw new RuntimeException(e);
-    //        }
-
-
-
-
-    // ArrayList<String> folks = new ArrayList<>();
-    //        Scanner in = new Scanner(System.in);
-    //        boolean done = false;
-    //
-    //        File workingDirectory = new File(System.getProperty("user.dir"));
-    //        Path file = Paths.get(workingDirectory.getPath() + "\\src\\personData.txt");
-    //
-    //        String personRec = "";
-    //        String ID = "";
-    //        String firstName = "";
-    //        String lastName = "";
-    //        String title = "";
-    //        int YOB = 0;
-    //
-    //        do {
-    //            ID = SafeInput.getNonZeroLenString(in, "Enter the ID [6 digits]");
-    //            firstName = SafeInput.getNonZeroLenString(in, "Enter your first name");
-    //            lastName = SafeInput.getNonZeroLenString(in, "Enter your last name");
-    //            title = SafeInput.getNonZeroLenString(in, "Enter your title");
-    //            YOB = SafeInput.getRangedInt(in, "Enter your year of birth", 1000, 9999);
-    //
-    //            personRec = ID + ", " + firstName + ", " + lastName + ", " + title + ", " + YOB;
-    //            folks.add(personRec);
-    //
-    //            done = SafeInput.getYNConfirm(in, "Are you done?");
-    //
-    //        }while(!done);
-    //
-    //        for (String p: folks)
-    //            System.out.println(p);
-    //        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.toFile())))
-    //        {
-    //
-    //            // Finally can write the file LOL!
-    //
-    //            for(String rec : folks)
-    //            {
-    //                writer.write(rec, 0, rec.length());  // stupid syntax for write rec
-    //                // 0 is where to start (1st char) the write
-    //                // rec. length() is how many chars to write (all)
-    //                writer.newLine();  // adds the new line
-    //
-    //            }
-    //            writer.close(); // must close the file to seal it and flush buffer
-    //            System.out.println("Data file written!");
-    //        }
-    //        catch (IOException e)
-    //        {
-    //            e.printStackTrace();
-    //        }
 }
